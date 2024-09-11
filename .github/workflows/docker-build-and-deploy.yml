@@ -41,15 +41,25 @@ jobs:
     needs: build
 
     steps:
-      # Step 1: Log in to Docker Hub (on the self-hosted server)
+      # Step 1: Install Docker (if not already installed)
+      - name: Install Docker
+        run: |
+          if ! [ -x "$(command -v docker)" ]; then
+            curl -fsSL https://get.docker.com -o get-docker.sh
+            sudo sh get-docker.sh
+            sudo usermod -aG docker $USER
+            newgrp docker
+          fi
+
+      # Step 2: Log in to Docker Hub
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # Step 2: Pull the new Docker image from Docker Hub
+      # Step 3: Pull the new Docker image from Docker Hub
       - name: Pull the latest Docker image
         run: docker pull your-dockerhub-username/simple-app:latest
 
-      # Step 3: Stop and remove the existing container (if running)
+      # Step 4: Stop and remove the existing container (if running)
       - name: Stop and remove existing container
         run: |
           if [ "$(docker ps -q -f name=simple-app)" ]; then
@@ -57,8 +67,7 @@ jobs:
             docker rm simple-app
           fi
 
-      # Step 4: Run the new container on the server
+      # Step 5: Run the new container on the server
       - name: Run new Docker container
         run: |
           docker run -d --name simple-app -p 80:80 your-dockerhub-username/simple-app:latest
-
