@@ -1,15 +1,14 @@
-# .github/workflows/docker-build-and-deploy.yml
 name: Build, Push Docker Image, and Deploy
 
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main  # Trigger workflow on push to the 'main' branch
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: self-hosted  # Ensure this matches your runner label
 
     steps:
       - name: Checkout code
