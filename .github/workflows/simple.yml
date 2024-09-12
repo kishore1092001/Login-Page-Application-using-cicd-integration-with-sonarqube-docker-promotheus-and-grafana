@@ -47,7 +47,7 @@ jobs:
             -e SONAR_TOKEN=${{ secrets.SONARQUBE_TOKEN }} \
             -v $(pwd):/usr/src \
             sonarsource/sonar-scanner-cli \
-            -Dsonar.projectKey=your-project-key \
+            -Dsonar.projectKey=action \
             -Dsonar.sources=src \
             -Dsonar.host.url=${{ secrets.SONARQUBE_URL }} \
             -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
