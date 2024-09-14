@@ -2,27 +2,28 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = '577f1909-11c2-4822-9556-56443a986c39'
+        DOCKER_HUB_CREDENTIALS = 'c099d980-79b7-49a0-a38e-a5aebcb6c27b'
         IMAGE_NAME = "kishore1092001/application:latest"
     }
 
     stages {
         stage('Install Docker') {
             steps {
-                sh '''
-                if ! [ -x "$(command -v docker)" ]; then
-                  echo "Docker is not installed. Installing Docker..."
-                  curl -fsSL https://get.docker.com -o get-docker.sh
-                  sh get-docker.sh
-                  sudo usermod -aG docker $USER
-                  newgrp docker
-                else
-                  echo "Docker is already installed."
-                fi
-                '''
+                withCredentials([usernamePassword(credentialsId: 'jenkins-user-credentials', passwordVariable: 'SUDO_PASSWORD', usernameVariable: 'USER')]) {
+                    sh '''
+                    if ! [ -x "$(command -v docker)" ]; then
+                      echo "Docker is not installed. Installing Docker..."
+                      curl -fsSL https://get.docker.com -o get-docker.sh
+                      echo $SUDO_PASSWORD | sudo -S sh get-docker.sh
+                      sudo usermod -aG docker $USER
+                      newgrp docker
+                    else
+                      echo "Docker is already installed."
+                    fi
+                    '''
+                }
             }
         }
-
         stage('Checkout Code') {
             steps {
                 // Clone the GitHub repository
