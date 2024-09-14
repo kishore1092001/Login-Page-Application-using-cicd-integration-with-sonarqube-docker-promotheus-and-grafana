@@ -2,27 +2,11 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = 'docker-hub-credentials'  // Update with the correct ID
+        DOCKER_HUB_CREDENTIALS = 'docker-hub-credentials'  // Update with your Docker Hub credentials ID
         IMAGE_NAME = "kishore1092001/application:latest"
     }
 
     stages {
-        stage('Install Docker') {
-            steps {
-                sh '''
-                if ! [ -x "$(command -v docker)" ]; then
-                  echo "Docker is not installed. Installing Docker..."
-                  curl -fsSL https://get.docker.com -o get-docker.sh
-                  sudo sh get-docker.sh
-                  sudo usermod -aG docker $USER
-                  newgrp docker
-                else
-                  echo "Docker is already installed."
-                fi
-                '''
-            }
-        }
-
         stage('Checkout Code') {
             steps {
                 // Clone the GitHub repository
